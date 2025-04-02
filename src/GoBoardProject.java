@@ -14,7 +14,7 @@ public class GoBoardProject {
         Boolean player1 = true;
         Boolean play = true;
         Boolean validmove = false;
-
+        
         //While loop for game to function, outputs which players turn it is
         while (play) {
             if(player1) {
@@ -41,6 +41,7 @@ public class GoBoardProject {
                 }
                 System.out.println();
             }
+
             //Initializes variables of coordinates, allows player to input coordinates and ensures pieces can only go in open spaces
             int moveX = -1;
             int moveY = -1;
@@ -50,12 +51,30 @@ public class GoBoardProject {
                 System.out.println("Enter a Y coordinate:");
                 moveY = myScn.nextInt() - 1;
 
-                if(goBoard[moveY][moveX] == null){
+                //checks if board player move is inbound 
+                if(moveX > 9){
+                    System.out.println("X coordinate out of bounds. Try again");
+                }
+                else if(moveX < 0){
+                    System.out.println("X coordinate out of bounds. Try again");
+                }
+                else if (moveY > 9){
+                    System.out.println("Y coordinate out of bounds. Try again");
+                }
+                else if(moveY < 0){
+                    System.out.println("Y coordinate out of bounds. Try again");
+                }
+
+                else if(goBoard[moveY][moveX] == null){
                     break;
-                }else{
+                }
+                //checks if board has space occupied
+                else{
                     System.out.println("That space is occupied. Try placing a piece at a different space.");
                 }
             }
+
+
             //Places piece on board, places a different character if player chooses X coordinate as 0.
             if(moveX != 0) {
                 goBoard[moveY][moveX] = (player1) ? "-b" : "-w";
@@ -68,5 +87,13 @@ public class GoBoardProject {
 
             //Closes scanner
         } myScn.close();
+    }   
+     
+    
     }
-}
+            
+
+    
+
+
+
