@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class GoBoardProject {
+public class GoBoardTest {
 
     // Method to check if a move is valid
     public static boolean IsMoveValid(String[][] goBoard, int moveX, int moveY) {
@@ -23,7 +23,6 @@ public class GoBoardProject {
         return true; // Move is valid
     }
 
-    //Outputs "Black's turn" or "White's turn"
     public static void turnDisplay(boolean player1) {
         if (player1) {
             System.out.println("Black's turn:");
@@ -32,11 +31,8 @@ public class GoBoardProject {
         }
     }
 
-    //outputs the board
     public static void displayBoard(String[][] goBoard, boolean player1) {
-
         turnDisplay(player1);
-
         System.out.println("  1 2 3 4 5 6 7 8 9");
         for (int i = 0; i < goBoard[0].length; i++) {
             System.out.print(i + 1 + " ");
@@ -55,64 +51,83 @@ public class GoBoardProject {
         }
     }
 
-    //places piece
     public static void placePiece(String[][] goBoard, boolean player1, int moveX, int moveY) {
-        if (moveX != 0) {
+        if(moveX != 0) {
             goBoard[moveY][moveX] = (player1) ? "-b" : "-w";
-        } else {
+        }
+        else {
             goBoard[moveY][moveX] = (player1) ? "b" : "w";
         }
+
     }
 
-    //prompts user to input move coordinates 
-    public static boolean acceptMove(String[][] goBoard, int[] move, Scanner myScn) {
-        while (true) {
+    public static void acceptMove(String[][] goBoard, boolean player1, boolean validmove, int moveX, int moveY, Scanner myScn) {
+        while (!validmove) {
             System.out.println("Enter an X coordinate:");
-            move[0] = myScn.nextInt() - 1;
+            moveX = myScn.nextInt() - 1;
             System.out.println("Enter a Y coordinate:");
-            move[1] = myScn.nextInt() - 1;
+            moveY = myScn.nextInt() - 1;
 
             // Call the IsMoveValid method to validate the move
-            if (IsMoveValid(goBoard, move[0], move[1])) {
-                return true; // Move is valid
+            if (IsMoveValid(goBoard, moveX, moveY)) {
+                validmove = true; // Move is valid
             }
         }
     }
 
-    public static void surroundPiece(String[][] goBoard, int moveY, int moveX) {
-        goBoard[moveY - 1][moveX] = "-x";
-        goBoard[moveY + 1][moveX] = "-x";
-        goBoard[moveY][moveX - 1] = "-x";
-        goBoard[moveY][moveX + 1] = "-x";
+    public static void checkCapture(String[][] goBoard, int moveX, int moveY) {
+
+        if(moveY - 1 >= 0 && goBoard[moveY - 1][moveX] != null){
+            System.out.println("Above capture works");
+        }
+        else if(moveY + 1 < goBoard.length && [moveY + 1][moveX] != null) {
+            System.out.println("Below capture works");
+        }
+        else if(moveX - 1 >= 0 && goBoard[moveY][moveX - 1] != null) {
+            System.out.println("Left capture works");
+        }
+        else if(moveX + 1 < goBoard[0].length && goBoard[moveY][moveX + 1] != null) {
+            System.out.println("Right capture works");
+        }
+        else{
+            System.out.println("No capture detected");
+        }
+
     }
-    
+
     public static void main(String[] args) {
         // Initializes array to represent the Go Board
         String[][] goBoard = new String[9][9];
+        goBoard[4][7] = "-b";
+        goBoard[7][1] = "-w";
+        goBoard[2][5] = "-b";
+        goBoard[8][3] = "-w";
 
         // Initializes variables and scanner
         Scanner myScn = new Scanner(System.in);
-        boolean player1 = true;
-        boolean play = true;
+        Boolean player1 = true;
+        Boolean play = true;
 
-        goBoard[5][4] = "-b";
-
-        // While loop for game to function
+        // While loop for game to function, outputs which player's turn it is
         while (play) {
-            //outputs the the board
+
+            // Prints out the board
             displayBoard(goBoard, player1);
 
             // Initializes variables for coordinates and ensures valid moves
-            int[] move = new int[2]; // Array to hold moveX and moveY
+            int moveX = -1;
+            int moveY = -1;
+            boolean validmove = false; // Reset validmove for the current turn
 
-            // Accept and validate the move
-            acceptMove(goBoard, move, myScn);
+            acceptMove(goBoard, player1, validmove, moveX, moveY, myScn);
 
             // Places piece on the board
-            placePiece(goBoard, player1, move[0], move[1]);
+            placePiece(goBoard, player1, moveX, moveY); 
 
             // Switches between players
             player1 = !player1;
+
+            checkCapture(goBoard, moveX, moveY);
         }
 
         // Closes scanner
